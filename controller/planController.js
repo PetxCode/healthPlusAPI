@@ -1,21 +1,32 @@
-const userModel = require("../model/userModel");
-const planModel = require("../model/planModel");
+// import user module
+const userModel = require( "../model/userModel" );
+// update the plan module
+const planModel = require( "../model/planModel" );
 
+// function to create a user
 const createPlan = async (req, res) => {
 	try {
-		const getUser = await userModel.findById(req.params.id);
+		// get user by its id.
+		const getUser = await userModel.findById( req.params.id );
+		// get the data present in the plan schema
 		const planData = new planModel(req.body);
 
+		// map the plan to user
 		planData.user = getUser;
+		// save the action
 		planData.save();
 
-		getUser.plan.push(planData);
+		// push the new plan created 
+		getUser.plan.push( planData );
+		// save the action
 		getUser.save();
 
+		// send a response
 		res.status(201).json({
 			status: "created",
 			data: planData,
-		});
+		} );
+		// track available errors
 	} catch (err) {
 		res.status(500).json({
 			message: err.message,
@@ -23,13 +34,17 @@ const createPlan = async (req, res) => {
 	}
 };
 
+// ge a single plan
 const getUserPlan = async (req, res) => {
 	try {
-		const getPlan = await userModel.findById(req.params.id).populate("plan");
+		// find a user
+		const getPlan = await userModel.findById( req.params.id ).populate( "plan" );
+		// send a response
 		res.status(200).json({
 			status: "success",
 			data: getPlan,
-		});
+		} );
+		// catch available errors
 	} catch (err) {
 		res.status(500).json({
 			message: err.message,
@@ -37,15 +52,19 @@ const getUserPlan = async (req, res) => {
 	}
 };
 
+// function a get a single plan
 const getaUserPlan = async (req, res) => {
 	try {
+		// get plan by id.
 		const getPlan = await planModel
 			.findById(req.params.planID)
-			.populate("user");
+			.populate( "user" );
+		// send a response
 		res.status(200).json({
 			status: "success",
 			data: getPlan,
-		});
+		} );
+		// catch any available error
 	} catch (err) {
 		res.status(500).json({
 			message: err.message,
@@ -88,6 +107,7 @@ const getaUserPlan = async (req, res) => {
 // 	}
 // };
 
+// function to update a plan
 const updateUserPlan = async (req, res) => {
 	const updatePlan = await planModel.findByIdAndUpdate(
 		req.params.planID,
@@ -95,25 +115,33 @@ const updateUserPlan = async (req, res) => {
 		{ new: true }
 	);
 
+	// send a response
 	res.status(200).json({
 		status: "success",
 		data: updatePlan,
 	});
 };
 
-const deleteUserPlan = async (req, res) => {
-	const getUser = await userModel.findById(req.params.id);
+// remove a single plan
+const deleteUserPlan = async ( req, res ) => {
+	// get user by id
+	const getUser = await userModel.findById( req.params.id );
+	// get plan by id
 	const getPlan = await planModel.findByIdAndDelete(req.params.planID);
 
-	getUser.plan.pull(getPlan);
+	// remove plan from user
+	getUser.plan.pull( getPlan );
+	// save the action
 	getUser.save();
 
+	// send a response
 	res.status(200).json({
 		status: "success",
 		data: getUser,
 	});
 };
 
+// export all functions
 module.exports = {
 	createPlan,
 	getUserPlan,

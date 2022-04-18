@@ -1,5 +1,7 @@
-const mongoose = require("mongoose");
+// import mongoose library
+const mongoose = require( "mongoose" );
 
+// user schema
 const userModel = mongoose.Schema(
 	{
 		fullName: {
@@ -24,12 +26,14 @@ const userModel = mongoose.Schema(
 		avatarID: {
 			type: String,
 		},
+		// a pointer/container referencing to the "plan" schema
 		plan: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "plans",
 			},
 		],
+		// a pointer/container referencing to the "hospital" schema
 		hospital: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
@@ -42,4 +46,5 @@ const userModel = mongoose.Schema(
 	}
 );
 
+// export user model
 module.exports = mongoose.model("users", userModel);
